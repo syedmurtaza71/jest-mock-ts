@@ -1,0 +1,48 @@
+{
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "targets": {
+          "node": 14
+        }
+      }
+    ],
+    "@babel/preset-typescript"
+  ],
+  "plugins": [
+    [
+      "module-resolver",
+      {
+        "root":["./"],
+          "alias": {
+            "@Service1": "./services/service-1"
+          },
+          "outDir":"./build",
+          "loose":false
+      }
+    ],
+    [
+      "@babel/plugin-transform-modules-commonjs",
+      {
+        "extensions": [".ts", ".tsx"],
+        "loose":false
+      }
+    ],
+    [
+    "@babel/plugin-proposal-class-properties",
+    {
+      "loose":false
+    }
+    ],
+    [
+    "@babel/plugin-transform-runtime",{
+      "loose":false
+    }
+    ]
+  ],
+  "sourceRoot": "./",
+  "ignore": [
+    "node_modules/**"
+  ]
+}

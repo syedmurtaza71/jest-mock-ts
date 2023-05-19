@@ -1,0 +1,49 @@
+import supertest from "supertest"
+import express from "express";
+import userRoutes from "../routes/user";
+import mongoose from "mongoose";
+
+// import middleware from "../middleware/User"; // these are imports that are only to check if the mocked were called
+// import service1 from "@Service1"; //same 
+
+const app = express();
+app.use("/user", userRoutes);
+let server:any;
+
+beforeAll(() => {
+  server = app.listen(3000);
+  mongoose
+  .connect("mongodb+srv://murtazaali:murtazaali@cluster0.fim0bgl.mongodb.net/?retryWrites=true&w=majority",
+  ()=>{
+    console.log(`DB CONNECTED`);
+  })
+});
+
+jest.mock("../middleware/User",()=>{
+  return {
+    authenticate: jest.fn((req, res, next) => {
+      console.log("Mocker Mocks");
+      next(); 
+  })}
+});
+
+jest.mock("../services/service-1",()=>{
+  return {
+    service_1: jest.fn(() => {
+      console.log("I am a 3rd Party Mocked Service");
+  }),
+  }
+});
+
+describe("tests", () => {
+  // Add a beforeAll hook to start the server
+  test('should return 200',async () => {
+    const response = await supertest(server).get("/user/get/64637ec3689ce8cca4edd505");
+    expect(response.status).toEqual(200);
+  });
+});
+
+// Add an afterAll hook to close the server
+afterAll(() => {
+  server.close();
+});
